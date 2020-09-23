@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PersonDirectory.Core\PersonDirectory.Core.csproj" />
+    <ProjectReference Include="..\PersonDirectory.Infrastructure\PersonDirectory.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
