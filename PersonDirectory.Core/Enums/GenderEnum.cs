@@ -8,12 +8,11 @@ using System.Text.Json.Serialization;
 
 namespace PersonDirectory.Core.Enums
 {
-    [JsonConverter(typeof(StringEnumConverter))]
     public enum GenderEnum
     {
-        [Display(Name = "ქალი")]
+        //[Display(Name = "ქალი")]
         Female = 0,
-        [Display(Name = "კაცი")]
+        //[Display(Name = "კაცი")]
         Male = 1
     }
 }

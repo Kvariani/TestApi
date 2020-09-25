@@ -6,9 +6,9 @@ namespace PersonDirectory.Core.Enums
 {
     public enum RelationTypeEnum
     {
-        კოლეგა = 0,
-        ნაცნობი = 1,
-        ნათესავი = 2,
-        სხვა = 3
+        Colleague = 0,
+        Familiar = 1,
+        Relative = 2,
+        Other = 3
     }
 }

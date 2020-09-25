@@ -63,7 +63,7 @@ namespace PersonDirectory.Tests
             using (var context = new ApplicationDbContext(options))
             {
                 var logic = new PersonRepository(context, mapper);
-                logic.CreatePerson(new BasePerson() { Firstname = "ბექა" });
+                logic.CreatePerson(new BasePerson() { Firstname = "ბექა" }).GetAwaiter().GetResult();
                 context.SaveChanges();
             }
         }

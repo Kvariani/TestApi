@@ -4,75 +4,43 @@ using PersonDirectory.Core.Enums;
 using PersonDirectory.Core.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PersonDirectory.Api.Controllers
 {
-    //[Route("api/[controller]")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class PersonController : ControllerBase
     {
         readonly IPersonRepository _repository;
 
-        public PersonController(IPersonRepository repository)
-        {
-            _repository = repository;
-        }
-
+        public PersonController(IPersonRepository repository) => _repository = repository;
 
         [HttpPost]
-        public ActionResult<Person> CreatePerson([FromBody] BasePerson person)
-        {
-            return _repository.CreatePerson(person);
-        }
+        public async Task<ActionResult<int>> CreatePerson([FromBody] BasePerson person) => await _repository.CreatePerson(person);
 
         [HttpPut]
-        public async Task<ActionResult<Person>> ModifyPerson(int id, [FromBody] BasePerson person)
-        {
-            return _repository.ModifyPerson(id, person);
-        }
+        public async Task<ActionResult> ModifyPerson(int id, [FromBody] BasePerson person) => await DoMyAction(() => _repository.ModifyPerson(id, person));
 
         [HttpPost]
-        public async Task<ActionResult<Person>> AddRelatedPerson(int personId, int relatedPersonID, RelationTypeEnum relationType)
-        {
-            return _repository.AddRelatedPerson(personId, relatedPersonID, relationType);
-        }
+        public async Task<ActionResult> AddRelatedPerson(int personId, int relatedPersonID, RelationTypeEnum relationType) => await DoMyAction(() => _repository.AddRelatedPerson(personId, relatedPersonID, relationType));
 
         [HttpDelete]
-        public async Task<ActionResult<bool>> DeleteRelatedPerson(int personId, int relatedPersonID)
-        {
-            return _repository.DeleteRelatedPerson(personId, relatedPersonID);
-        }
+        public async Task<ActionResult<bool>> DeleteRelatedPerson(int personId, int relatedPersonID) => await DoMyAction(() => _repository.DeleteRelatedPerson(personId, relatedPersonID));
 
         [HttpDelete]
-        public async Task<ActionResult<bool>> DeletePerson(int id)
-        {
-            return _repository.DeletePerson(id);
-            //var todoItem = await _context.TodoItems.FindAsync(id);
-            //if (todoItem == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //    //_context.TodoItems.Remove(todoItem);
-            //    //await _context.SaveChangesAsync();
-
-            //    //return todoItem;
-            //    throw new NotImplementedException();
-        }
+        public async Task<ActionResult<bool>> DeletePerson(int id) => await DoMyAction(() => _repository.DeletePerson(id));
 
         [HttpGet]
-        public async Task<ActionResult<Person>> GetPerson(int id)
-        {
-            return _repository.GetPerson(id);
-        }
+        public async Task<ActionResult<Person>> GetPerson(int id) => await _repository.GetPerson(id);
 
         [HttpGet]
-        public async Task<ActionResult<Person[]>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch)
+        public async Task<IEnumerable<Person>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch) => await _repository.GetPersons(searchString, pageIndex, pageSize, fastSearch);
+
+        async Task<ActionResult> DoMyAction(Action action)
         {
-            return _repository.GetPersons(searchString, pageIndex, pageSize, fastSearch);
+            await Task.Run(() => action.Invoke());
+            return Ok();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace PersonDirectory.Core.Entities
         public string Lastname { get; set; }
         //[JsonConverter(typeof(StringEnumConverter))]
         [Required]
-        [JsonConverter(typeof(StringEnumConverter))]
+        //[JsonConverter(typeof(StringEnumConverter))]
         public GenderEnum Gender { get; set; }
         [Required, RegularExpression(@"([0-9]{11})", ErrorMessage = "პირადი ნომერი არასწორ ფორმატშია")]
         public string IDNumber { get; set; }

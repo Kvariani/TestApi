@@ -38,22 +38,24 @@ namespace PersonDirectoryApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson(c => c.SerializerSettings.Converters.Add(new StringEnumConverter()));
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+            }).AddJsonOptions(x =>
+            {
+                x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             services.AddSwaggerGen(c =>
             {
-                c.DescribeAllEnumsAsStrings();
-                c.MapType<GenderEnum>(() => new OpenApiSchema { Type = "string", Format = "string" });
+                //c.DescribeAllEnumsAsStrings();
+                //c.MapType<GenderEnum>(() => new OpenApiSchema { Type = "enum", Format = "string" });
+                //c.MapType<RelationTypeEnum>(() => new OpenApiSchema { Type = "enum", Format = "string" });
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddControllers();
-                //.AddJsonOptions(x =>
-                //{
-                //    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                //});
 
 
             services.AddScoped<IPersonRepository, PersonRepository>();
@@ -62,7 +64,7 @@ namespace PersonDirectoryApi
                 options.Filters.Add(typeof(ValidateModelFilter));
             }).AddDataAnnotations();
 
-            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            //services.AddControllersWithViews()
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
