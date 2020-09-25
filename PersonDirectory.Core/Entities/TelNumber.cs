@@ -1,14 +1,17 @@
 ﻿using PersonDirectory.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace PersonDirectory.Core.Entities
 {
-    public class TelNumber
+    public class TelNumber : EntityBase
     {
-        public int ID { get; set; }
+        [RegularExpression(@"([+0123456789 ]{4,50})", ErrorMessage = "ტელეფონის ნომერი არასწორ ფორმატშია")]
         public string Number { get; set; }
         public TelNumberTypeEnum TelNumberType { get; set; }
+        [JsonIgnore]
+        public Person Person { get; set; }
+        [JsonIgnore]
+        public int PersonId { get; set; }
     }
 }

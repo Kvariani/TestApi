@@ -1,39 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersonDirectory.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PersonDirectory.Infrastructure.DBContexts
 {
-    public class PersonContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public PersonContext(DbContextOptions<PersonContext> options) : base(options)
-        {
-
-
-
-        }
-
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Person> Persons { get; set; }
+        public DbSet<RelatedPersonToPerson> RelatedPersonToPerson { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<Person>().ToTable(nameof(Person));
 
-            modelBuilder.Entity<Person>().Property(x => x.Firstname).IsRequired();
-            modelBuilder.Entity<Person>().Property(x => x.Lastname).IsRequired();
-            
+            modelBuilder.Entity<RelatedPersonToPerson>()
+                .HasKey(bc => new { bc.PersonId, bc.RelatedPersonId });
+            modelBuilder.Entity<RelatedPersonToPerson>()
+                .HasOne(bc => bc.Person)
+                .WithMany(b => b.ReladedPersons)
+                .HasForeignKey(bc => bc.PersonId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<RelatedPersonToPerson>()
+                .HasOne(bc => bc.RelatedPerson)
+                .WithMany(c => c.ReladedOn)
+                .HasForeignKey(bc => bc.RelatedPersonId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Person>()
-            //.HasRequired<FirstName>(s => s.CurrentGrade)
-            .HasMany(g => g.ReladedPersons).WithOne(x => x.Person).OnDelete(DeleteBehavior.Cascade);
-
-            //modelBuilder.Entity<RelatedPersonToPerson>().HasOne(x => x.RelatedPerson);
-            //.HasRequired<FirstName>(s => s.CurrentGrade)
-            //.HasMany(g => g.ReladedPersons).WithOne(x => x.Person);
+            modelBuilder.Entity<TelNumber>()
+                .HasOne(x => x.Person)
+                .WithMany(x => x.TelNumbers)
+                .HasForeignKey(x => x.PersonId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

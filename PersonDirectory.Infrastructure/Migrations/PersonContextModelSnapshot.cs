@@ -8,7 +8,7 @@ using PersonDirectory.Infrastructure.DBContexts;
 
 namespace PersonDirectory.Infrastructure.Migrations
 {
-    [DbContext(typeof(PersonContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class PersonContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -30,7 +30,6 @@ namespace PersonDirectory.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Firstname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Gender")
@@ -40,7 +39,6 @@ namespace PersonDirectory.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Lastname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
@@ -50,25 +48,18 @@ namespace PersonDirectory.Infrastructure.Migrations
 
             modelBuilder.Entity("PersonDirectory.Core.Entities.RelatedPersonToPerson", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("PersonID")
+                    b.Property<int>("PersonId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RelatedPersonID")
+                    b.Property<int>("RelatedPersonId")
                         .HasColumnType("int");
 
                     b.Property<int>("RelationType")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("PersonId", "RelatedPersonId");
 
-                    b.HasIndex("PersonID");
-
-                    b.HasIndex("RelatedPersonID");
+                    b.HasIndex("RelatedPersonId");
 
                     b.ToTable("RelatedPersonToPerson");
                 });
@@ -100,12 +91,15 @@ namespace PersonDirectory.Infrastructure.Migrations
                 {
                     b.HasOne("PersonDirectory.Core.Entities.Person", "Person")
                         .WithMany("ReladedPersons")
-                        .HasForeignKey("PersonID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
 
                     b.HasOne("PersonDirectory.Core.Entities.Person", "RelatedPerson")
-                        .WithMany()
-                        .HasForeignKey("RelatedPersonID");
+                        .WithMany("ReladedOn")
+                        .HasForeignKey("RelatedPersonId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PersonDirectory.Core.Entities.TelNumber", b =>

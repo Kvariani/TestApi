@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PersonDirectory.Core.Entities;
+using PersonDirectory.Core.Enums;
 using PersonDirectory.Core.Repositories;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace PersonDirectory.Api.Controllers
 {
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class PersonController : ControllerBase
     {
@@ -20,57 +22,57 @@ namespace PersonDirectory.Api.Controllers
         }
 
 
-        [HttpPost(Name = nameof(CreatePerson))]
-        public async Task<ActionResult<Person>> CreatePerson(Person person)
+        [HttpPost]
+        public ActionResult<Person> CreatePerson([FromBody] BasePerson person)
         {
-            _repository.CreatePerson();
-            return null;
+            return _repository.CreatePerson(person);
         }
 
-        //[HttpPut(Name = nameof(ModifyPerson))]
-        //public async Task<ActionResult<Person>> ModifyPerson(Person person)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [HttpPut]
+        public async Task<ActionResult<Person>> ModifyPerson(int id, [FromBody] BasePerson person)
+        {
+            return _repository.ModifyPerson(id, person);
+        }
 
-        //[HttpPost(Name = nameof(AddRelatedPerson))]
-        //public async Task<ActionResult<Person>> AddRelatedPerson(Person person)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [HttpPost]
+        public async Task<ActionResult<Person>> AddRelatedPerson(int personId, int relatedPersonID, RelationTypeEnum relationType)
+        {
+            return _repository.AddRelatedPerson(personId, relatedPersonID, relationType);
+        }
 
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<Person>> DeleteRelatedPerson(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [HttpDelete]
+        public async Task<ActionResult<bool>> DeleteRelatedPerson(int personId, int relatedPersonID)
+        {
+            return _repository.DeleteRelatedPerson(personId, relatedPersonID);
+        }
 
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<Person>> DeletePerson(int id)
-        //{
-        //    //var todoItem = await _context.TodoItems.FindAsync(id);
-        //    //if (todoItem == null)
-        //    //{
-        //    //    return NotFound();
-        //    //}
+        [HttpDelete]
+        public async Task<ActionResult<bool>> DeletePerson(int id)
+        {
+            return _repository.DeletePerson(id);
+            //var todoItem = await _context.TodoItems.FindAsync(id);
+            //if (todoItem == null)
+            //{
+            //    return NotFound();
+            //}
 
-        //    //_context.TodoItems.Remove(todoItem);
-        //    //await _context.SaveChangesAsync();
+            //    //_context.TodoItems.Remove(todoItem);
+            //    //await _context.SaveChangesAsync();
 
-        //    //return todoItem;
-        //    throw new NotImplementedException();
-        //}
+            //    //return todoItem;
+            //    throw new NotImplementedException();
+        }
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Person>> GetPerson(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [HttpGet]
+        public async Task<ActionResult<Person>> GetPerson(int id)
+        {
+            return _repository.GetPerson(id);
+        }
 
-        //[HttpGet(Name = nameof(GetPersons))]
-        //public async Task<ActionResult<Person[]>> GetPersons(string searchString)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [HttpGet]
+        public async Task<ActionResult<Person[]>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch)
+        {
+            return _repository.GetPersons(searchString, pageIndex, pageSize, fastSearch);
+        }
     }
 }

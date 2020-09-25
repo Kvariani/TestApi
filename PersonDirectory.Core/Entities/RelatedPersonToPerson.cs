@@ -1,15 +1,17 @@
 ﻿using PersonDirectory.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Text.Json.Serialization;
 
 namespace PersonDirectory.Core.Entities
 {
     public class RelatedPersonToPerson
     {
-        public int ID { get; set; }
         public RelationTypeEnum RelationType { get; set; }
-        public Person Person { get; set; }
-        public Person RelatedPerson { get; set; }
+        [JsonIgnore]
+        public virtual Person Person { get; set; }
+        public virtual Person RelatedPerson { get; set; }
+        [JsonIgnore]
+        public int PersonId { get; set; }
+        [JsonIgnore]
+        public int RelatedPersonId { get; set; }
     }
 }

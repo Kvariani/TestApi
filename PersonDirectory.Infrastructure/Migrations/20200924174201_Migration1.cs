@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PersonDirectory.Infrastructure.Migrations
 {
-    public partial class Migration2 : Migration
+    public partial class Migration1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +13,8 @@ namespace PersonDirectory.Infrastructure.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Firstname = table.Column<string>(nullable: false),
-                    Lastname = table.Column<string>(nullable: false),
+                    Firstname = table.Column<string>(nullable: true),
+                    Lastname = table.Column<string>(nullable: true),
                     Gender = table.Column<int>(nullable: false),
                     IDNumber = table.Column<string>(nullable: true),
                     DateOfBirth = table.Column<DateTime>(nullable: false)
@@ -28,24 +28,22 @@ namespace PersonDirectory.Infrastructure.Migrations
                 name: "RelatedPersonToPerson",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RelationType = table.Column<int>(nullable: false),
-                    PersonID = table.Column<int>(nullable: true),
-                    RelatedPersonID = table.Column<int>(nullable: true)
+                    PersonId = table.Column<int>(nullable: false),
+                    RelatedPersonId = table.Column<int>(nullable: false),
+                    RelationType = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RelatedPersonToPerson", x => x.ID);
+                    table.PrimaryKey("PK_RelatedPersonToPerson", x => new { x.PersonId, x.RelatedPersonId });
                     table.ForeignKey(
-                        name: "FK_RelatedPersonToPerson_Persons_PersonID",
-                        column: x => x.PersonID,
+                        name: "FK_RelatedPersonToPerson_Persons_PersonId",
+                        column: x => x.PersonId,
                         principalTable: "Persons",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RelatedPersonToPerson_Persons_RelatedPersonID",
-                        column: x => x.RelatedPersonID,
+                        name: "FK_RelatedPersonToPerson_Persons_RelatedPersonId",
+                        column: x => x.RelatedPersonId,
                         principalTable: "Persons",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
@@ -73,14 +71,9 @@ namespace PersonDirectory.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_RelatedPersonToPerson_PersonID",
+                name: "IX_RelatedPersonToPerson_RelatedPersonId",
                 table: "RelatedPersonToPerson",
-                column: "PersonID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RelatedPersonToPerson_RelatedPersonID",
-                table: "RelatedPersonToPerson",
-                column: "RelatedPersonID");
+                column: "RelatedPersonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TelNumber_PersonID",

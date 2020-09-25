@@ -12,6 +12,17 @@ using Microsoft.Extensions.Logging;
 using PersonDirectory.Infrastructure.DBContexts;
 using Microsoft.EntityFrameworkCore;
 using PersonDirectory.Core.Repositories;
+using PersonDirectory.Api;
+using PersonDirectory.Api.Extensions;
+using AutoMapper;
+using Serilog;
+using Serilog.Events;
+//using System.Text.Json.Serialization;
+using PersonDirectory.Core.Enums;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
+//using Swashbuckle.Swagger;
 
 namespace PersonDirectoryApi
 {
@@ -27,12 +38,39 @@ namespace PersonDirectoryApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(c => c.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
-            services.AddSwaggerGen();
-            services.AddDbContext<PersonContext>(options =>
+            services.AddSwaggerGen(c =>
+            {
+                c.DescribeAllEnumsAsStrings();
+                c.MapType<GenderEnum>(() => new OpenApiSchema { Type = "string", Format = "string" });
+            });
+
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddControllers();
+                //.AddJsonOptions(x =>
+                //{
+                //    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                //});
+
+
             services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddMvcCore(options =>
+            {
+                options.Filters.Add(typeof(ValidateModelFilter));
+            }).AddDataAnnotations();
+
+            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new PersonDirectory.Core.Mapper.MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,10 +81,7 @@ namespace PersonDirectoryApi
                 app.UseDeveloperExceptionPage();
             }
 
-            //using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            //{
-            //    app.ApplicationServices.GetRequiredService<PersonContext>().Database.Migrate();
-            //}
+            app.ConfigureExceptionHandler(Configuration);
 
             app.UseSwagger();
 

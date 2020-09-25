@@ -6,8 +6,8 @@ namespace PersonDirectory.Core.Enums
 {
     public enum TelNumberTypeEnum
     {
-        Mobile = 0,
-        Home = 1,
-        Work = 2
+        მობილურის = 0,
+        ოფისის = 1,
+        სახლის = 2
     }
 }
