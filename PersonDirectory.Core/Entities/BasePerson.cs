@@ -1,35 +1,37 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using Newtonsoft.Json.Converters;
-using PersonDirectory.Core.Enums;
+﻿using PersonDirectory.Core.Enums;
+using PersonDirectory.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using static PersonDirectory.Core.Helpers.Constants;
 
 namespace PersonDirectory.Core.Entities
 {
     public class BasePerson : EntityBase, IValidatableObject
     {
-        [Required, RegularExpression(@"((^[a-zA-Z ]{4,50})*$|(^[ა-ჰ ]{4,50})*$)", ErrorMessage = "სახელი არასწორ ფორმატშია")] // TODO
+        [Required(ErrorMessage = STR_FirstnameIsRequired), CheckNameValidity("სახელი")]
         public string Firstname { get; set; }
-        [Required, RegularExpression(@"((^[a-zA-Z ]{4,50})*$|(^[ა-ჰ ]{4,50})*$)", ErrorMessage = "გვარი არასწორ ფორმატშია")] // TODO
+        [Required(ErrorMessage = STR_LastnameIsRequired), CheckNameValidity("გვარი")]
         public string Lastname { get; set; }
-        //[JsonConverter(typeof(StringEnumConverter))]
-        [Required]
-        //[JsonConverter(typeof(StringEnumConverter))]
-        public GenderEnum Gender { get; set; }
-        [Required, RegularExpression(@"([0-9]{11})", ErrorMessage = "პირადი ნომერი არასწორ ფორმატშია")]
+        [Required(ErrorMessage = STR_GenderIsRequired)]
+        public GenderEnum? Gender { get; set; }
+        [Required(ErrorMessage = STR_IdNumberIsRequired), RegularExpression(@"([0-9]{11})", ErrorMessage = STR_IdNUmberIsNotValid)]
         public string IDNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = STR_BirthDateIsRequired)]
         [DisplayFormat(/*ApplyFormatInEditMode = true, */DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public ICollection<TelNumber> TelNumbers { get; set; }
 
+        //TODO უნდა შევამოწმო სახელი რომ იყოს ქართულად და გვარი ინგლისურად
+        string Fullname => $"{Lastname} {Firstname}";
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (CalculateAge(DateOfBirth, DateTime.Now) < 18)
-                yield return new ValidationResult("პიროვნება უნდა იყოს მინიმუმ 18 წლის");
+            if (DateOfBirth == null)
+                yield return new ValidationResult(STR_BirthDateIsRequired);
+
+            if (CalculateAge(DateOfBirth.Value, DateTime.Now) < 18)
+                yield return new ValidationResult(STR_AgeShouldNotBeLessThen18Year);
         }
 
         int CalculateAge(DateTime birthDate, DateTime now)

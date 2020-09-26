@@ -1,19 +1,21 @@
-﻿using Newtonsoft.Json.Converters;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using PersonDirectory.Core.Enums;
-using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace PersonDirectory.Core.Entities
 {
     public class RelatedPersonToPerson
     {
-        [Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public RelationTypeEnum RelationType { get; set; }
-        [JsonIgnore]
+        [JsonIgnore, Required]
         public virtual Person Person { get; set; }
+        [JsonIgnore, Required]
         public virtual Person RelatedPerson { get; set; }
-        [JsonIgnore]
+        [JsonIgnore, Required]
         public int PersonId { get; set; }
-        [JsonIgnore]
+        [JsonIgnore, Required]
         public int RelatedPersonId { get; set; }
     }
 }

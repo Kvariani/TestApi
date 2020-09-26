@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Events;
-using Serilog.Formatting;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PersonDirectory.Api.Extensions
 {

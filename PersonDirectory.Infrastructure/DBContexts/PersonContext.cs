@@ -13,6 +13,7 @@ namespace PersonDirectory.Infrastructure.DBContexts
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Person>().HasIndex(i => new { i.Firstname, i.Lastname, i.IDNumber });
 
             modelBuilder.Entity<RelatedPersonToPerson>()
                 .HasKey(bc => new { bc.PersonId, bc.RelatedPersonId });

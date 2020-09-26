@@ -12,7 +12,6 @@ namespace PersonDirectory.Core.Repositories
 {
     public class PersonRepository : IPersonRepository
     {
-        // TODO მეთოდის დაბრუნებული მნიშვნელობები ის მინდა რაც ეხლა აქვს? დუბლირებული კოდი, ნალზე შემოწმება და ერორები
 
         readonly ApplicationDbContext _context;
         readonly IMapper _mapper;
@@ -27,7 +26,6 @@ namespace PersonDirectory.Core.Repositories
             var person = _context.Find<Person>(personId);
             var relatedPerson = _context.Find<Person>(relatedPersonID);
             var relation = new RelatedPersonToPerson() { Person = person, RelatedPerson = relatedPerson, RelationType = relationType };
-            //person.ReladedPersons.Add();
             _context.Add(relation);
             await _context.SaveChangesAsync();
         }
@@ -71,8 +69,7 @@ namespace PersonDirectory.Core.Repositories
 
         public async Task ModifyPerson(int id, BasePerson person)
         {
-            var p = _context.Find<Person>(id);
-            _mapper.Map(person, p);
+            _mapper.Map(person, _context.Find<Person>(id));
             await _context.SaveChangesAsync();
         }
     }
