@@ -1,9 +1,7 @@
 ﻿using PersonDirectory.Core.Entities;
 using PersonDirectory.Infrastructure.DBContexts;
 using System.Linq;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Threading.Tasks;
@@ -54,18 +52,23 @@ namespace PersonDirectory.Core.Repositories
 
         public async Task<Person> GetPerson(int personId) => await Task.FromResult(GetPersons().FirstOrDefault(x => x.ID == personId));
 
-        //TODO სერჩი უნდა შევცვალო
-        public async Task<IEnumerable<Person>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch = false)
+        
+        public async Task<IEnumerable<Person>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch, bool useSqlFunction)
         {
-            var splitedSearchString = searchString.Split(' ');
+            var splitedSearchString = searchString.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x));
 
             if (fastSearch)
+            {
+                if (useSqlFunction)
+                    return _context.Persons.FromSqlRaw($"select * from FindPerson(N'{searchString}',{pageIndex},{pageSize})").Include(x => x.ReladedPersons).Include(x => x.TelNumbers);
+                
                 return await Task.FromResult(GetPersons().Where(x => splitedSearchString.Any(a => $"{x.Firstname}_{x.Lastname}_{x.IDNumber}".ToLower().Contains(a.ToLower()))).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArray());
+            }
 
             return await Task.FromResult(GetPersons().Where(x => splitedSearchString.Any(a => $"{x.Firstname}_{x.Lastname}_{x.IDNumber}_{string.Join("_", x.TelNumbers.Select(s => s.Number))}".ToLower().Contains(a.ToLower()))).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArray());
         }
 
-        IEnumerable<Person> GetPersons() => _context.Persons.Include(x => x.ReladedPersons).ThenInclude(x => x.RelatedPerson).Include(x => x.TelNumbers).AsEnumerable();
+        IEnumerable<Person> GetPersons() => _context.Persons.Include(x => x.ReladedPersons).Include(x => x.TelNumbers).AsEnumerable();
 
         public async Task ModifyPerson(int id, BasePerson person)
         {

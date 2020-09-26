@@ -33,9 +33,5 @@
     <ProjectReference Include="..\PersonDirectory.Infrastructure\PersonDirectory.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
-
 
 </Project>

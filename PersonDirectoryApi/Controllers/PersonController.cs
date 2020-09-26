@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using PersonDirectory.Core.Entities;
 using PersonDirectory.Core.Enums;
 using PersonDirectory.Core.Repositories;
@@ -13,8 +14,13 @@ namespace PersonDirectory.Api.Controllers
     public class PersonController : ControllerBase
     {
         readonly IPersonRepository _repository;
+        readonly bool useSqlFunctionForFastSearch;
 
-        public PersonController(IPersonRepository repository) => _repository = repository;
+        public PersonController(IPersonRepository repository, IConfiguration configuration)
+        {
+            _repository = repository;
+            useSqlFunctionForFastSearch = Convert.ToBoolean(configuration.GetSection("UseSqlFunctionForFastSearch")?.Value ?? "false");
+        }
 
         [HttpPost]
         public async Task<ActionResult<int>> CreatePerson([FromBody] BasePerson person) => await _repository.CreatePerson(person);
@@ -35,7 +41,7 @@ namespace PersonDirectory.Api.Controllers
         public async Task<ActionResult<Person>> GetPerson(int id) => await _repository.GetPerson(id);
 
         [HttpGet]
-        public async Task<IEnumerable<Person>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch) => await _repository.GetPersons(searchString, pageIndex, pageSize, fastSearch);
+        public async Task<IEnumerable<Person>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch) => await _repository.GetPersons(searchString, pageIndex, pageSize, fastSearch, useSqlFunctionForFastSearch);
 
         async Task<ActionResult> DoMyAction(Action action)
         {
