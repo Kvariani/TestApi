@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonDirectory.Infrastructure.DBContexts;
 
-namespace PersonDirectory.Infrastructure.Migrations
+namespace PersonDirectory.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200924174201_Migration1")]
-    partial class Migration1
+    [Migration("20200928001448_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,22 +28,28 @@ namespace PersonDirectory.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Firstname")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
                     b.Property<string>("IDNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Lastname")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("Firstname", "Lastname", "IDNumber");
 
                     b.ToTable("Persons");
                 });
@@ -76,7 +82,7 @@ namespace PersonDirectory.Infrastructure.Migrations
                     b.Property<string>("Number")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PersonID")
+                    b.Property<int>("PersonId")
                         .HasColumnType("int");
 
                     b.Property<int>("TelNumberType")
@@ -84,7 +90,7 @@ namespace PersonDirectory.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("PersonID");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("TelNumber");
                 });
@@ -92,13 +98,13 @@ namespace PersonDirectory.Infrastructure.Migrations
             modelBuilder.Entity("PersonDirectory.Core.Entities.RelatedPersonToPerson", b =>
                 {
                     b.HasOne("PersonDirectory.Core.Entities.Person", "Person")
-                        .WithMany("ReladedPersons")
+                        .WithMany("RelatedPersons")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("PersonDirectory.Core.Entities.Person", "RelatedPerson")
-                        .WithMany("ReladedOn")
+                        .WithMany("RelatedOn")
                         .HasForeignKey("RelatedPersonId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
@@ -106,9 +112,11 @@ namespace PersonDirectory.Infrastructure.Migrations
 
             modelBuilder.Entity("PersonDirectory.Core.Entities.TelNumber", b =>
                 {
-                    b.HasOne("PersonDirectory.Core.Entities.Person", null)
+                    b.HasOne("PersonDirectory.Core.Entities.Person", "Person")
                         .WithMany("TelNumbers")
-                        .HasForeignKey("PersonID");
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

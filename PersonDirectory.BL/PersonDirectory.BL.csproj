@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PersonDirectory.Core\PersonDirectory.Core.csproj" />
-    <ProjectReference Include="..\PersonDirectory.Infrastructure\PersonDirectory.Infrastructure.csproj" />
+    <ProjectReference Include="..\PersonDirectory.Infrastructure\PersonDirectory.DAL.csproj" />
   </ItemGroup>
 
 </Project>

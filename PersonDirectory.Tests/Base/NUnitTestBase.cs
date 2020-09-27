@@ -7,8 +7,19 @@ namespace PersonDirectory.Tests
     {
         
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
+        }
+
+        [OneTimeSetUp]
+        public virtual void OneTimeSetUp()
+        {
+        }
+
+        [OneTimeTearDown]
+        public virtual void GlobalTeardown()
+        {
+
         }
     }
 }

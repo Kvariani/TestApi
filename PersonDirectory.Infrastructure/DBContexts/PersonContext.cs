@@ -17,16 +17,18 @@ namespace PersonDirectory.Infrastructure.DBContexts
 
             modelBuilder.Entity<RelatedPersonToPerson>()
                 .HasKey(bc => new { bc.PersonId, bc.RelatedPersonId });
+
             modelBuilder.Entity<RelatedPersonToPerson>()
                 .HasOne(bc => bc.Person)
-                .WithMany(b => b.ReladedPersons)
-                .HasForeignKey(bc => bc.PersonId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(b => b.RelatedPersons)
+                .OnDelete(DeleteBehavior.ClientCascade)
+                .HasForeignKey(bc => bc.PersonId);
+
             modelBuilder.Entity<RelatedPersonToPerson>()
                 .HasOne(bc => bc.RelatedPerson)
-                .WithMany(c => c.ReladedOn)
-                .HasForeignKey(bc => bc.RelatedPersonId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(c => c.RelatedOn)
+                .OnDelete(DeleteBehavior.ClientCascade)
+                .HasForeignKey(bc => bc.RelatedPersonId);
 
             modelBuilder.Entity<TelNumber>()
                 .HasOne(x => x.Person)

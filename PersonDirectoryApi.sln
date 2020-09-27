@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonDirectory.Api", "Pers
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonDirectory.Core", "PersonDirectory.Core\PersonDirectory.Core.csproj", "{7CF554A9-AA79-45E9-85DC-66E362B16A4F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonDirectory.Infrastructure", "PersonDirectory.Infrastructure\PersonDirectory.Infrastructure.csproj", "{CBD9A7CA-8736-47A7-8377-040683F54C36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonDirectory.DAL", "PersonDirectory.Infrastructure\PersonDirectory.DAL.csproj", "{CBD9A7CA-8736-47A7-8377-040683F54C36}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonDirectory.BL", "PersonDirectory.BL\PersonDirectory.BL.csproj", "{9146CA47-1114-4A11-B077-9198ED8494E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonDirectory.Tests", "PersonDirectory.Tests\PersonDirectory.Tests.csproj", "{39606C0D-2A14-45C3-A59E-CA29B8CEDA8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonDirectory.Tests", "PersonDirectory.Tests\PersonDirectory.Tests.csproj", "{39606C0D-2A14-45C3-A59E-CA29B8CEDA8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionLogger", "ExceptionLogger\ExceptionLogger.csproj", "{03FEF8C3-94B2-404D-AD2A-69D4BEDAA355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionLogger", "ExceptionLogger\ExceptionLogger.csproj", "{03FEF8C3-94B2-404D-AD2A-69D4BEDAA355}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

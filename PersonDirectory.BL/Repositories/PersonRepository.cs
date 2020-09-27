@@ -38,9 +38,14 @@ namespace PersonDirectory.Core.Repositories
 
         public async Task DeletePerson(int personId)
         {
-            var person = _context.Find<Person>(personId);
-            _context.Remove(person);
-            await _context.SaveChangesAsync();
+            var person = _context.Persons.Include(x => x.RelatedPersons).Include(x => x.RelatedOn).FirstOrDefault(x => x.ID == personId);
+            if (person != null)
+            {
+                _context.RemoveRange(person.RelatedOn);
+                _context.RemoveRange(person.RelatedPersons);
+                _context.Remove(person);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteRelatedPerson(int personId, int relatedPersonId)
@@ -52,23 +57,27 @@ namespace PersonDirectory.Core.Repositories
 
         public async Task<Person> GetPerson(int personId) => await Task.FromResult(GetPersons().FirstOrDefault(x => x.ID == personId));
 
-        
-        public async Task<IEnumerable<Person>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch, bool useSqlFunction)
+
+        public async Task<IEnumerable<Person>> GetPersons(string searchString, int pageIndex, int pageSize, bool fastSearch, bool useSqlFunction = false)
         {
             var splitedSearchString = searchString.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x));
 
             if (fastSearch)
             {
                 if (useSqlFunction)
-                    return _context.Persons.FromSqlRaw($"select * from FindPerson(N'{searchString}',{pageIndex},{pageSize})").Include(x => x.ReladedPersons).Include(x => x.TelNumbers);
-                
+                    return _context.Persons.FromSqlRaw($"select * from FindPerson(N'{searchString}',{pageIndex},{pageSize})").Include(x => x.RelatedPersons).Include(x => x.TelNumbers);
+
                 return await Task.FromResult(GetPersons().Where(x => splitedSearchString.Any(a => $"{x.Firstname}_{x.Lastname}_{x.IDNumber}".ToLower().Contains(a.ToLower()))).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArray());
             }
 
-            return await Task.FromResult(GetPersons().Where(x => splitedSearchString.Any(a => $"{x.Firstname}_{x.Lastname}_{x.IDNumber}_{string.Join("_", x.TelNumbers.Select(s => s.Number))}".ToLower().Contains(a.ToLower()))).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArray());
+            return await Task.FromResult(GetPersons()
+                .Where(x => splitedSearchString
+                    .Any(a => $"{x.Firstname}_{x.Lastname}_{x.IDNumber}_{x.Gender.ToString() ?? string.Empty}_{(x.DateOfBirth.HasValue ? x.DateOfBirth.Value.ToString("yyyy-MM-dd") : string.Empty)}_{string.Join("_", x.TelNumbers.Select(s => s.Number))}"
+                    .ToLower()
+                    .Contains(a.ToLower()))).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArray());
         }
 
-        IEnumerable<Person> GetPersons() => _context.Persons.Include(x => x.ReladedPersons).Include(x => x.TelNumbers).AsEnumerable();
+        IEnumerable<Person> GetPersons() => _context.Persons.Include(x => x.RelatedPersons).Include(x => x.TelNumbers).AsEnumerable();
 
         public async Task ModifyPerson(int id, BasePerson person)
         {

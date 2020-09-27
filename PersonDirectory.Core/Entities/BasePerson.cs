@@ -3,6 +3,7 @@ using PersonDirectory.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using static PersonDirectory.Core.Helpers.Constants;
 
 namespace PersonDirectory.Core.Entities
@@ -18,11 +19,10 @@ namespace PersonDirectory.Core.Entities
         [Required(ErrorMessage = STR_IdNumberIsRequired), RegularExpression(@"([0-9]{11})", ErrorMessage = STR_IdNUmberIsNotValid)]
         public string IDNumber { get; set; }
         [Required(ErrorMessage = STR_BirthDateIsRequired)]
-        [DisplayFormat(/*ApplyFormatInEditMode = true, */DataFormatString = "{0:yyyy-MM-dd}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? DateOfBirth { get; set; }
         public ICollection<TelNumber> TelNumbers { get; set; }
 
-        //TODO უნდა შევამოწმო სახელი რომ იყოს ქართულად და გვარი ინგლისურად
         string Fullname => $"{Lastname} {Firstname}";
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -32,6 +32,9 @@ namespace PersonDirectory.Core.Entities
 
             if (CalculateAge(DateOfBirth.Value, DateTime.Now) < 18)
                 yield return new ValidationResult(STR_AgeShouldNotBeLessThen18Year);
+
+            if (!Regex.IsMatch(Fullname, CheckNameValidityAttribute.STR_ValidNamePattern))
+                yield return new ValidationResult($"გვარი და სახელი{STR_PropertyShouldNotContainGeoAndLatinSymbols}");
         }
 
         int CalculateAge(DateTime birthDate, DateTime now)

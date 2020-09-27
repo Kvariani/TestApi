@@ -11,7 +11,7 @@ namespace PersonDirectory.Core.Entities
         public RelationTypeEnum RelationType { get; set; }
         [JsonIgnore, Required]
         public virtual Person Person { get; set; }
-        [JsonIgnore, Required]
+        [Required]
         public virtual Person RelatedPerson { get; set; }
         [JsonIgnore, Required]
         public int PersonId { get; set; }

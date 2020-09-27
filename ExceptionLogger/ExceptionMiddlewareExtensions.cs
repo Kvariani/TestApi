@@ -15,7 +15,7 @@ namespace PersonDirectory.Api.Extensions
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .WriteTo.File("Log.txt")
-                .WriteTo.MSSqlServer(Configuration.GetConnectionString("DefaultConnection"), tableName: "ExceptionLog", autoCreateSqlTable: true)
+                .WriteTo.MSSqlServer(Configuration.GetConnectionString("ErrorLogDB"), tableName: "ExceptionLog", autoCreateSqlTable: true)
                 .CreateLogger();
 
             app.UseMiddleware<ExceptionMiddleware>();

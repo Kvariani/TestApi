@@ -31,8 +31,8 @@ namespace PersonDirectory.Tests.Validation
         [Test(Description = "გვარი არ უნდა შეიცავდეს ერთდროულად ქართულ და ლათინურ ასოებს")]
         public void LastnameMustNotContainsEnglishAndGeoWordsTogether() => CreatePersonAndGetValidationResult(_ => _.Lastname = "ქვარიანi").ShouldBe($"გვარი{STR_PropertyShouldNotContainGeoAndLatinSymbols}");
 
-        //[Test(Description = "სახელი და გვარი არ უნდა შეიცავდეს ერთდროულად ქართულ და ლათინურ ასოებს")]
-        //public void FirstnameAndLastnameMustNotContainsEnglishAndGeoWordsTogether() => CreatePersonAndGetValidationResult(_ => { _.Firstname = "ბექა"; _.Lastname = "Kvariani"; }).ShouldBe($"გვარი და სახელი{STR_PropertyShouldNotContainGeoAndLatinSymbols}");
+        [Test(Description = "სახელი და გვარი არ უნდა შეიცავდეს ერთდროულად ქართულ და ლათინურ ასოებს")]
+        public void FullnameMustNotContainsEnglishAndGeoWordsTogether() => CreatePersonAndGetValidationResult(_ => { _.Firstname = "ბექა"; _.Lastname = "Kvariani"; }).ShouldBe($"გვარი და სახელი{STR_PropertyShouldNotContainGeoAndLatinSymbols}");
 
         [Test(Description = "სახელი არ უნდა იყოს 2 სიმბოლოზე ნაკლები")]
         public void FirstnameMinLenghtMustBe2() => CreatePersonAndGetValidationResult(_ => { _.Firstname = "ბ"; }).ShouldBe($"სახელი{STR_PropertyShouldNotContainGeoAndLatinSymbols}");
@@ -57,13 +57,11 @@ namespace PersonDirectory.Tests.Validation
 
         string CreatePersonAndGetValidationResult(Action<Person> modifyPersonAction)
         {
-            var person = CreateNewPerson("ბექა", "ქვარიანი", "01027058514", new DateTime(1990, 8, 8), GenderEnum.Male);
+            var person = ObjectFactory.CreateNewPerson("ბექა", "ქვარიანი", "01027058514", new DateTime(1990, 8, 8), GenderEnum.Male);
             modifyPersonAction.Invoke(person);
             var result = person.GetValidationResults();
             return result.SingleOrDefault()?.ErrorMessage;
         }
-        Person CreateNewPerson(string firstname, string lastname, string idNumber, DateTime dateOfBirth, GenderEnum gender) =>
-            new Person() { Firstname = firstname, Lastname = lastname, IDNumber = idNumber, DateOfBirth = dateOfBirth, Gender = gender };
     }
 }
 

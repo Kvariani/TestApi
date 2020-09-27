@@ -16,11 +16,7 @@ namespace PersonDirectory.Api.Controllers
         readonly IPersonRepository _repository;
         readonly bool useSqlFunctionForFastSearch;
 
-        public PersonController(IPersonRepository repository, IConfiguration configuration)
-        {
-            _repository = repository;
-            useSqlFunctionForFastSearch = Convert.ToBoolean(configuration.GetSection("UseSqlFunctionForFastSearch")?.Value ?? "false");
-        }
+     
 
         [HttpPost]
         public async Task<ActionResult<int>> CreatePerson([FromBody] BasePerson person) => await _repository.CreatePerson(person);
@@ -47,6 +43,12 @@ namespace PersonDirectory.Api.Controllers
         {
             await Task.Run(() => action.Invoke());
             return Ok();
+        }
+
+        public PersonController(IPersonRepository repository, IConfiguration configuration)
+        {
+            _repository = repository;
+            useSqlFunctionForFastSearch = Convert.ToBoolean(configuration.GetSection("UseSqlFunctionForFastSearch")?.Value ?? "false");
         }
     }
 }

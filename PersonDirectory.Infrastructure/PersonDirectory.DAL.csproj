@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -13,6 +13,14 @@
     <Compile Remove="Migrations\20200924170229_Migration1.Designer.cs" />
     <Compile Remove="Migrations\20200924173222_Migration1.cs" />
     <Compile Remove="Migrations\20200924173222_Migration1.Designer.cs" />
+    <Compile Remove="Migrations\20200927232209_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200927232209_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200927232929_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200927232929_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200927234507_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200927234507_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200927235122_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200927235122_InitialMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

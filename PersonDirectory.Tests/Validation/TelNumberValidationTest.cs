@@ -14,8 +14,14 @@ namespace PersonDirectory.Tests.Validation
         [Test(Description = "ტელეფონის ნომერი არ უნდა იყოს მინიმუმ 50 სიმბოლოზე მეტი")]
         public void TelNumberShouldNotBeMoreThen50Symbol() => CreateTelNumberAndGetValidationResult("123456789012345678901234567890123456789012345678901234567890").ShouldBe(STR_TelNumberIsNotCurrentFormat);
 
-        [Test(Description = "ტელეფონის ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს ან ციფრებს და იწყებოდეს + სიმბოლოთი")]
-        public void ValidTelNumber() => CreateTelNumberAndGetValidationResult("+995558231299").ShouldBeNull();
+        [Test(Description = "ტელეფონის ნომერი შესაძლებელია იწყებოდეს + სიმბოლოთი")]
+        public void ValidTelNumberWithPlusSymbol() => CreateTelNumberAndGetValidationResult("+995558231299").ShouldBeNull();
+
+        [Test(Description = "ტელეფონის ნომერი შესაძლებელია არ იწყებოდეს + სიმბოლოთი")]
+        public void ValidTelNumberWithoutPlusSymbol() => CreateTelNumberAndGetValidationResult("558231299").ShouldBeNull();
+
+        [Test(Description = "ტელეფონის ნომერი არ უნდა შეიცავდეს ერთზე მეტ + სიმბოლოს")]
+        public void TelNumberShouldNotContainMoreThenOnePlusSymbol() => CreateTelNumberAndGetValidationResult("++558").ShouldBe(STR_TelNumberIsNotCurrentFormat);
 
         [Test(Description = "ტელეფონის ნომერი უნდა არ უნდა შეიცავდეს ასოებს")]
         public void TelNumberShoudNotContainAlphabetLetters() => CreateTelNumberAndGetValidationResult("ა").ShouldBe(STR_TelNumberIsNotCurrentFormat);

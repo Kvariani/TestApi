@@ -6,9 +6,9 @@ namespace PersonDirectory.Core.Entities
     public class Person : BasePerson
     {
      
-        public virtual ICollection<RelatedPersonToPerson> ReladedPersons { get; set; }
+        public virtual ICollection<RelatedPersonToPerson> RelatedPersons { get; set; }
         [JsonIgnore]
-        public virtual ICollection<RelatedPersonToPerson> ReladedOn { get; set; }
+        public virtual ICollection<RelatedPersonToPerson> RelatedOn { get; set; }
 
     }
 }

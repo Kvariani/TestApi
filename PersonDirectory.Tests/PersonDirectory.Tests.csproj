@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PersonDirectory.BL\PersonDirectory.BL.csproj" />
-    <ProjectReference Include="..\PersonDirectory.Infrastructure\PersonDirectory.Infrastructure.csproj" />
+    <ProjectReference Include="..\PersonDirectory.Infrastructure\PersonDirectory.DAL.csproj" />
   </ItemGroup>
 
 </Project>

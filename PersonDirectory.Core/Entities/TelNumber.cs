@@ -7,7 +7,7 @@ namespace PersonDirectory.Core.Entities
 {
     public class TelNumber : EntityBase
     {
-        [RegularExpression(@"([+0123456789 ]{4,50})", ErrorMessage = Constants.STR_TelNumberIsNotCurrentFormat)] // TODO რეგექსი არასწორია, შესაძლებელი უნდა იყოს რომ მხოლოდ თავში დაეწეროს + სიმბოლო
+        [RegularExpression(@"(^([+]{1})?([0123456789 ]{4,50}))$", ErrorMessage = Constants.STR_TelNumberIsNotCurrentFormat)]
         public string Number { get; set; }
         public TelNumberTypeEnum TelNumberType { get; set; }
         [JsonIgnore]
